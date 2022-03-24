@@ -11,6 +11,7 @@ function addUser(firstNameToAdd, lastNameToAdd, userName, hashedPassword) {
 }
   
 function addPost(u_id, postTitle, postContent) {
+    console.log('addPost log', postTitle)
     return knex('posts').insert({user_id: u_id, title: postTitle, content: postContent})
 }
 
@@ -19,6 +20,10 @@ function addPost(u_id, postTitle, postContent) {
 function getSpecificItem(table, i_id) {
     return knex.select('*').from(table).where({id: i_id})
 }
+
+function getUser(userName){
+    return knex.select('*').from('users').where({username: userName})
+}  
 
   //UPDATE
 
@@ -37,8 +42,17 @@ function getAll(input) {
     return knex.select("*").from(input)
 }
 
+//PASSWORD HASH
 
-  module.exports = { addUser, addPost, getSpecificItem,
-                     updateItem, deleteItem, getAll 
+function getPasswordHash(userName){
+    return ( 
+    knex('users').where({username: userName}).select('password_encrypted')
+    .then(data=>data[0].password_encrypted) //confused about this
+    )}
+   
+
+
+  module.exports = { addUser, addPost, getUser, getSpecificItem,
+                     updateItem, deleteItem, getAll, getPasswordHash
                    };
  
